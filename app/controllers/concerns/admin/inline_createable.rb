@@ -43,11 +43,7 @@ module Admin
           private
 
           def turbo_request?
-            begin
-              request.headers.fetch("turbo-frame")
-            rescue KeyError => e
-              false
-            end
+            request.headers.fetch("turbo-frame") rescue false
           end
         end
       end

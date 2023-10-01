@@ -1,6 +1,10 @@
 ActiveAdmin.register Customer do
   include Admin::InlineCreateable
 
+  has_many :addresses
+
+  associations_dropdown
+
   permit_params :name
 
   # optional, will default to form

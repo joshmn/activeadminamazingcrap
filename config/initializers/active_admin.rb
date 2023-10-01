@@ -351,8 +351,48 @@ ActiveAdmin.setup do |config|
   # config.use_webpacker = true
 end
 
+module ResourceAssociations
+  def self.included(klass)
+    klass.class_attribute :associations, default: {}
+  end
+
+  def has_many(name, options = {})
+    options[:type] = :has_many
+    self.class.associations[name] = options
+    associations_dropdown
+
+    self.class.associations
+  end
+
+  def belongs_to(name, options = {})
+    options[:type] = :belongs_to
+    self.class.associations[name] = options
+    associations_dropdown
+
+    self.class.associations
+  end
+
+  def associations_dropdown
+    return if @_associations_dropdown
+
+    @_associations_dropdown = true
+    associations = self.class.associations
+    action_item only: [:show] do
+      if controller.action_name == "show"
+        dropdown_menu 'Associations' do
+          associations.each do |name, options|
+            item name.to_s.classify.constantize.model_name.plural.titleize, url_for([:admin, name, { q: { customer_id_eq: resource.id } }])
+          end
+        end
+      end
+    end
+  end
+end
+
 module ActiveAdmin
   class ResourceDSL
+    include ResourceAssociations
+
     def inline_form(options = {}, &block)
       config.set_page_presenter :inline_form, ActiveAdmin::PagePresenter.new(options, &block)
     end
