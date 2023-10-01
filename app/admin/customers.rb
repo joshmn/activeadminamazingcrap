@@ -3,8 +3,6 @@ ActiveAdmin.register Customer do
 
   has_many :addresses
 
-  associations_dropdown
-
   permit_params :name
 
   # optional, will default to form
