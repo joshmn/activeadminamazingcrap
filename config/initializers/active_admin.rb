@@ -351,7 +351,15 @@ ActiveAdmin.setup do |config|
   # config.use_webpacker = true
 end
 
-module SomeCrap
+module ActiveAdmin
+  class ResourceDSL
+    def inline_form(options = {}, &block)
+      config.set_page_presenter :inline_form, ActiveAdmin::PagePresenter.new(options, &block)
+    end
+  end
+end
+
+module InjectImportmap
   def build_active_admin_head
     within head do
       text_node javascript_importmap_tags
@@ -360,4 +368,21 @@ module SomeCrap
   end
 end
 
-ActiveAdmin::Views::Pages::Base.prepend SomeCrap
+ActiveAdmin::Views::Pages::Base.prepend InjectImportmap
+
+module ActiveAdmin
+  module Views
+    class FormtasticProxy
+      def cancel_link(url = { action: "index" }, html_options = {}, li_attrs = {})
+        if (request.headers.fetch("turbo-frame") rescue false)
+          html_options[:data] ||= {}
+          html_options[:data][:controller] ||= "modal"
+          html_options[:data][:action] ||= "click->modal#close"
+        end
+
+        super
+      end
+
+    end
+  end
+end

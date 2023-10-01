@@ -5,7 +5,7 @@ import 'controllers'
 import TurboPower from 'turbo_power'
 TurboPower.initialize(Turbo.StreamActions)
 
-Turbo.StreamActions.custom = function(x, y, z) {
+Turbo.StreamActions.modal_created = function(x, y, z) {
 document.dispatchEvent(new CustomEvent('modal:created',{  detail: { content: JSON.parse(this.getAttribute('content')) } }))
 }
 

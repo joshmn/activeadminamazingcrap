@@ -3,9 +3,8 @@ ActiveAdmin.register Order do
 
   form do |f|
     f.inputs 'Details' do
-      f.input :customer, as: :select, hint: link_to("Create new?", "#", data: { controller: "trigger", src: new_admin_customer_path })
+      f.input :customer, as: :fancy_select
     end
-
 
     actions
   end
